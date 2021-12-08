@@ -3,58 +3,90 @@ syntax = "proto3";
 package proto.marketdata;
 option go_package = "proto/marketdata";
 
+/**
+ * Service for MarketDataApi.
+ */
 service MarketDataApi {
+  /// Subscribe Market Price from Server stream
   rpc SubscribeMarketPrice(SubscribeMarketPriceRequest) returns (stream MarketPrice) {}
-  rpc GetPrice(GetPriceRequest) returns (MarketPrice) {}
-  rpc GetPrices(GetPricesRequest) returns (stream MarketPrice) {}
 
+  /// Get latest bidask snapshot of a stock
+  rpc GetStockBidAsk(GetStockBidAskRequest) returns (StockBidAsk) {}
+
+  /// Get latest minute candle snapshot of a stock
+  rpc GetStockOHLCV(GetStockOHLCVRequest) returns (StockOHLCV) {}
 }
 
-message SubscribeMarketPriceRequest { }
-
-message SubscribeStockDataStream { 
-  int64 stream_id =1;
-  MarketPrice market_price =2;
+/**
+ * Request for GetStockBidAsk
+ */
+message GetStockBidAskRequest {
+  uint32 scty = 1;  /// requesting security code
 }
 
-message GetPriceRequest { string scty = 1; }
+/**
+ * Request for GetStockOHLCV
+ */
+message GetStockOHLCVRequest {
+  uint32 scty = 1;  /// requesting security code
+}
 
-message GetPricesRequest { repeated string sctys = 1; }
+/**
+ * Request for SubscribeMarketPrice
+ */
+message SubscribeMarketPriceRequest {}
 
+/**
+ * Data stream of SubscribeMarketPrice
+ */
 message MarketPrice {
   reserved 1 to 9;
   oneof Msg {
+    /** First message when stream creats and contains stream information */
     SubcriptionInfo subscription = 10;
+
+    /** OHLCV candle of a Stock */
     StockOHLCV stock_price = 11;
+
+    /** BidAsk snapshot of a Stock */
     StockBidAsk stock_quote = 12;
   }
 }
 
+/**
+ * Subscriptino information
+ */
 message SubcriptionInfo {
-  int64 subscription_id = 1;
+  string subscription_id = 1;  /// stream id; created automatically when connected
 }
 
+/**
+ * BidAsk information of a stock
+ */
 message StockBidAsk {
-  int64 unixtime = 1;
-  int32 scty = 2;
-  int32 bid_price = 3;
-  int64 bid_volume = 4;
-  int32 ask_price = 5;
-  int64 ask_volume = 6;
-  int32 last_price =7;
-  int64 last_volume =8;
- }
- 
-
-message StockOHLCV {
-  int64 unixtime = 1;
-  int32 scty = 2;
-  int32 open = 3;
-  int32 high = 4;
-  int32 low = 5;
-  int32 close = 6;
-  int64 volume = 7;
-  int64 volume_bid = 8;
-  int64 volume_ask = 9;
+  int64 unixtime    = 1;  /// updated timestamp in unix millisecond
+  uint32 scty       = 2;  /// security code
+  int32 bid_price   = 3;  /// bid price, 3 d.p.
+  int32 bid_volume  = 4;  /// bid volume
+  int32 ask_price   = 5;  /// ask price, 3 d.p
+  int32 ask_volume  = 6;  /// ask volume
+  int32 last_price  = 7;  /// last traded price 3 d.p.
+  int32 last_volume = 8;  /// last traded volume
+  int64 last_time   = 9;  /// last traded timestamp in unix millisecond
 }
 
+/**
+ * Candle statistic in minute of a stock
+ */
+message StockOHLCV {
+  int64 unixtime   = 1;   /// updated timestamp in unix millisecond
+  uint32 scty      = 2;   /// security code: 10001:HSIF, 10002:MHIF
+  int32 open       = 3;   /// Open price
+  int32 high       = 4;   /// High price
+  int32 low        = 5;   /// Low price
+  int32 close      = 6;   /// Close price, i.e. latest price
+  int32 volume     = 7;   /// total traded volume
+  int32 volume_bid = 8;   /// total traded (bid) volume
+  int32 volume_ask = 9;   /// total traded (ask) volume
+  int64 bucket     = 10;  /// minute timestamp in unix millisecond
+}
