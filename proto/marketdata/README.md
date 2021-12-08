@@ -3,7 +3,7 @@
 
 ## Table of Contents
 
-- [proto/marketdata/marketdata.proto](#proto/marketdata/marketdata.proto)
+- [marketdata/marketdata.proto](#marketdata/marketdata.proto)
     - [GetStockBidAskRequest](#proto.marketdata.GetStockBidAskRequest)
     - [GetStockOHLCVRequest](#proto.marketdata.GetStockOHLCVRequest)
     - [MarketPrice](#proto.marketdata.MarketPrice)
@@ -18,10 +18,10 @@
 
 
 
-<a name="proto/marketdata/marketdata.proto"></a>
+<a name="marketdata/marketdata.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## proto/marketdata/marketdata.proto
+## marketdata/marketdata.proto
 
 
 
@@ -127,7 +127,7 @@ Subscriptino information
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| subscription_id | [string](#string) |  | subscription stream id; created automatically when connected |
+| subscription_id | [string](#string) |  | stream id; created automatically when connected |
 
 
 
