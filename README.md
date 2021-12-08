@@ -23,7 +23,7 @@ EOM
 ```
 
 ```sh
-grpcurl -d @ --plaintext $GRPC_ENDPOINT proto.marketdata.MarketDataApi/GetStockBidAsk <<EOM
+grpcurl -d @ --plaintext $GRPC_ENDPOINT proto.marketdata.MarketDataApi/GetStockOHLCV <<EOM
 {
     "scty":10001
 }
