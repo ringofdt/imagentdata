@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package proto.marketdata;
+option go_package = "proto/marketdata";
+
+service MarketDataApi {
+  rpc SubscribeMarketPrice(SubscribeMarketPriceRequest) returns (stream MarketPrice) {}
+  rpc GetPrice(GetPriceRequest) returns (MarketPrice) {}
+  rpc GetPrices(GetPricesRequest) returns (stream MarketPrice) {}
+
+}
+
+message SubscribeMarketPriceRequest { }
+
+message SubscribeStockDataStream { 
+  int64 stream_id =1;
+  MarketPrice market_price =2;
+}
+
+message GetPriceRequest { string scty = 1; }
+
+message GetPricesRequest { repeated string sctys = 1; }
+
+message MarketPrice {
+  reserved 1 to 9;
+  oneof Msg {
+    SubcriptionInfo subscription = 10;
+    StockOHLCV stock_price = 11;
+    StockBidAsk stock_quote = 12;
+  }
+}
+
+message SubcriptionInfo {
+  int64 subscription_id = 1;
+}
+
+message StockBidAsk {
+  int64 unixtime = 1;
+  int32 scty = 2;
+  int32 bid_price = 3;
+  int64 bid_volume = 4;
+  int32 ask_price = 5;
+  int64 ask_volume = 6;
+  int32 last_price =7;
+  int64 last_volume =8;
+ }
+ 
+
+message StockOHLCV {
+  int64 unixtime = 1;
+  int32 scty = 2;
+  int32 open = 3;
+  int32 high = 4;
+  int32 low = 5;
+  int32 close = 6;
+  int64 volume = 7;
+  int64 volume_bid = 8;
+  int64 volume_ask = 9;
+}
+
